@@ -9,6 +9,7 @@ class ClicCataleg{
 	private $nivell;
 	private $area;
 	private $logoUrl;
+	private $instUrl;
 	private $llistaJClics;
 	
 	function __construct() {
@@ -31,6 +32,12 @@ class ClicCataleg{
 	
 	public function addTitol($lang, $o){
 		array_push($this->titol, $o);
+	}
+	
+	public function appendTitol($s){
+		foreach($this->titol as $k => $t){
+			$this->titol[$k] .= $s;
+		}
 	}
 	
 	public function addDescripcio($lang, $o){

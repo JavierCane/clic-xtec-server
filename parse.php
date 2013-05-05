@@ -6,6 +6,7 @@ error_reporting(E_ERROR | E_PARSE);
 
 
 $id = $_REQUEST['id'];
+$lang = $_REQUEST['lang'];
 
 $ccm = ClicCatalegManager::getInstance();
 echo "<pre>";
@@ -15,9 +16,9 @@ if(!$id){
 	print_r($list);
 }
 else{
-	$clic = $ccm->obtenirClicXTEC($id);
-	
-	print_r($clic->getJSONEncode());
+	$clic = $ccm->obtenirClicXTEC($id,$lang);
+	print_r($clic);
+	//print_r($clic->getJSONEncode());
 }
 
 
