@@ -1,5 +1,6 @@
 <?
 class ClicCataleg{
+	public static $TAULA = "DROIDCLIC_clics";
 	private $id;
 	private $titol;
 	private $descripcio;
@@ -9,13 +10,15 @@ class ClicCataleg{
 	private $nivell;
 	private $area;
 	private $logoUrl;
-	private $instUrl;
-	private $llistaJClics;
+	private $urlBase;
+	private $inst;
+	private $clicPrincipal;
+	private $clicsAdicionals;
 	
 	function __construct() {
 	    $this->titol = array();
 	    $this->descripcio = array();
-	    $this->llistaJClics = array();
+	    $this->clicsAdicionals = array();
 	}
 	
     public function __set($name, $value){
@@ -26,12 +29,12 @@ class ClicCataleg{
         return $this->$name;
     }
 	
-	public function addJClic($o){
-		array_push($this->llistaJClics, $o);
+	public function addClicAdicional($o){
+		array_push($this->clicsAdicionals, $o);
 	}
 	
 	public function addTitol($lang, $o){
-		array_push($this->titol, $o);
+		$this->titol[$lang] = $o;
 	}
 	
 	public function appendTitol($s){
@@ -41,11 +44,30 @@ class ClicCataleg{
 	}
 	
 	public function addDescripcio($lang, $o){
-		array_push($this->descripcio, $o);
+		$this->descripcio[$lang] = $o;
 	}
 	
 	public function getJSONEncode() {
 		return json_encode(get_object_vars($this));
 	}
+	
+	public function getSQL(){
+
+		foreach($this as $var => $value) {
+			$part1 .= $var ."," ;
+			if(!is_array($value)){
+				$part2 .= "'".addslashes($value)."',";
+			}
+			else{
+				$part2 .= "'".addslashes(json_encode($value))."',";
+			}
+		}
+		$part1 = substr($part1, 0, -1);
+		$part2 = substr($part2, 0, -1);
+		
+		$sql = "REPLACE INTO ".ClicCataleg::$TAULA." (".$part1.") VALUES (".$part2 .") ";
+		return $sql;
+	}
+	
 }
 ?>

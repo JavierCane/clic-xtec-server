@@ -85,20 +85,55 @@ class ClicCatalegManager{
 		}
 		foreach($llista_clic_inst as $clic_inst => $titol){
 			$t = clone $clic;
-			$t->instUrl = $clic_inst;
+			$t->urlBase = $this->extractBaseURLFromInst($clic_inst);
+			$t->inst = str_replace($t->urlBase,"",$clic_inst);
 			if($titol){
 				$t->appendTitol(" - ".$titol);
 			}
-			obtenirClicsFromXMLInst($clic);
+			$this->obtenirClicsFromXMLInst($t);
 			array_push($res,$t);
 		}
 		return $res;
 	}
 	
+	public function extractBaseURLFromInst($url){
+		preg_match('/(.*\/)/', $url, $parts);
+		return $parts[0];
+	}
+	
 	public function obtenirClicsFromXMLInst($clic){
-		//TODO
+		$html = HTML::do_GET($clic->urlBase . $clic->inst);
+		$dom = new DOMDocument();
+		$dom->loadHTML($html);
+		$xpath = new DOMXPath($dom);
+
+		$clic->clicPrincipal = $xpath->query('//shortcut')->item(0)->getAttribute("project");
+		$list_clic = $xpath->query('//file');
+		foreach($list_clic as $t){
+			$src = $t->getAttribute("src");
+			if(!$this->compareEndString($src, ".inst") && $src != $clic->clicPrincipal){
+				$clic->addClicAdicional($src);
+			}
+		}
 	}
     
+	public function guardarClic($clic){
+		$db = DBhelper::getInstance();
+		
+		try {
+			echo "vaig a fer insert";
+			$num = $db->exec($clic->getSQL());
+			echo "Resultats {".$num."}";
+		} catch (Exception $e) {
+			$db->rollBack();
+			echo "Failed: " . $e->getMessage();
+		}
+	}
+	
+	private function compareEndString($str, $end){
+		return substr_compare($str, $end, -strlen($end), strlen($end)) === 0;
+	}
+	
     /*  -----  Singleton pattern ----- */
 
     // singleton instance (es crida: $t = CLASSNAME::getInstance();)
