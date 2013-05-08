@@ -23,8 +23,11 @@ class ClicCatalegManager{
 		$links = $xpath->query('//*[@class="taulaSenar" or class="taulaParell"]/td/a');
 		foreach ($links as $link) {
 			$id = $this->getIdFromUrl($link->getAttribute("href"));
+			$parentNode = $link->parentNode->parentNode;
+			$lang_arr = explode(" ",trim($xpath->query('td[3]', $parentNode)->item(0)->nodeValue));
+	
 			//echo "<a href='?id=".$id."'>".$link->nodeValue."</a><br>";
-			array_push($res,$id);
+			array_push($res,array("id"=>$id,"lang"=>$lang_arr));
 		}
 		return $res;
 	}
@@ -121,11 +124,8 @@ class ClicCatalegManager{
 		$db = DBhelper::getInstance();
 		
 		try {
-			echo "vaig a fer insert";
 			$num = $db->exec($clic->getSQL());
-			echo "Resultats {".$num."}";
 		} catch (Exception $e) {
-			$db->rollBack();
 			echo "Failed: " . $e->getMessage();
 		}
 	}

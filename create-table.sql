@@ -1,7 +1,7 @@
 CREATE TABLE
 DROIDCLIC_clics 
 (
-id INT primary key,
+id INT/* primary key*/,
 titol varchar(255),
 descripcio varchar(2048),
 autors varchar(255),

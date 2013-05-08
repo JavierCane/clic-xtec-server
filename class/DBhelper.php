@@ -1,20 +1,28 @@
 <?
 include_once "constants.php";
 
+/*
+Les constants han d'estar definides al fitxer /class/constants.php:
 
+<?
+
+define("DB_DRIVER", "mysql");
+define("DB_HOST", "xxxx");
+define("DB_DBNAME", "xxxx");
+define("DB_USERNAME", "xxxxx");
+define("DB_PASSWORD", "xxxx");
+
+?>
+
+*/
 
 class DBhelper{
     private $db;
-	
-	private $DB_DRIVER = "mysql";
-	private $DB_HOST = "db468423667.db.1and1.com";
-	private $DB_DBNAME = "db468423667";
-	private $DB_USERNAME = "dbo468423667";
-	private $DB_PASSWORD = "FIB_GPS_SERVER";
+
     
     function __construct() {
-		$this->db = new PDO(''.$this->DB_DRIVER.':host='.$this->DB_HOST.';dbname='.$this->DB_DBNAME.';charset=utf8', 
-							$this->DB_USERNAME, $this->DB_PASSWORD);
+		$this->db = new PDO(''.DB_DRIVER.':host='.DB_HOST.';dbname='.DB_DBNAME.';charset=utf8', 
+							DB_USERNAME, DB_PASSWORD);
 		$this->db -> exec("SET CHARACTER SET utf8");
     }
 

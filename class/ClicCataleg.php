@@ -14,6 +14,7 @@ class ClicCataleg{
 	private $inst;
 	private $clicPrincipal;
 	private $clicsAdicionals;
+	private $tipusActivitats;
 	
 	function __construct() {
 	    $this->titol = array();
@@ -47,8 +48,22 @@ class ClicCataleg{
 		$this->descripcio[$lang] = $o;
 	}
 	
-	public function getJSONEncode() {
-		return json_encode(get_object_vars($this));
+	public function getPublicClass($lang) {
+		$t = new T();
+		$t->id = $this->id;
+		$t->titol = $this->titol[$lang];
+		$t->descripcio = $this->descripcio[$lang];
+		$t->autors = $this->autors;
+		$t->llicencia = $this->llicencia;
+		$t->nivell = $this->nivell;
+		$t->area = $this->area;
+		$t->logoUrl = $this->logoUrl;
+		$t->urlBase = $this->urlBase;
+		//$t->inst = $this->inst;
+		$t->clicPrincipal = $this->clicPrincipal;
+		$t->clicsAdicionals = $this->clicsAdicionals;
+		$t->tipusActivitats = $this->tipusActivitats;
+		return $t;
 	}
 	
 	public function getSQL(){
