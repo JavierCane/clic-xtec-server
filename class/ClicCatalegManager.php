@@ -9,9 +9,22 @@ class ClicCatalegManager{
     public $url_base = "http://clic.xtec.cat/db/";
 	public $url_llista = "http://clic.xtec.cat/db/listact_ca.jsp?num=100000";
 
-    function __construct() {
+    public function __construct() {
     }
 
+	public function getAllClics($inici = 0, $limit = 50){
+		$db = DBhelper::getInstance();
+		$sql = "SELECT * FROM ".ClicCataleg::$TAULA." WHERE 1 LIMIT ".intval($inici).", ".intval($limit)."";
+		$list = $db->fetchAllPreparedStatement($sql, array());
+		$res = array();
+		foreach($list as $row){
+			$clic = new ClicCataleg();
+			$clic->rowMapper($row);
+			array_push($res, $clic);
+		}
+		return $res;
+	}
+	
 	public function obtenirListIdClicXTEC(){
 		$res = array();
 		
@@ -24,9 +37,12 @@ class ClicCatalegManager{
 		foreach ($links as $link) {
 			$id = $this->getIdFromUrl($link->getAttribute("href"));
 			$parentNode = $link->parentNode->parentNode;
-			$lang_arr = explode(" ",trim($xpath->query('td[3]', $parentNode)->item(0)->nodeValue));
-	
-			//echo "<a href='?id=".$id."'>".$link->nodeValue."</a><br>";
+			$langs = $xpath->query('td[3]', $parentNode)->item(0)->textContent;
+			// L'string d'idioma té està separat per caràcters estranys (en hex: c2a0)
+			// Per tant partim per aquests caracters, i ens quedem amb tots els idiomes excepte
+			// el primer.
+			$lang_arr = explode($langs[0].$langs[1],trim($langs));
+			array_shift($lang_arr);
 			array_push($res,array("id"=>$id,"lang"=>$lang_arr));
 		}
 		return $res;
@@ -58,7 +74,10 @@ class ClicCatalegManager{
 			if($primer_cop){
 				$primer_cop = false;
 				$clic->autors = $xpath->query('*[@class="autors"]', $main)->item(0)->nodeValue;
-				$clic->logoUrl = $xpath->query('*[@class="container"]/img', $main)->item(0)->getAttribute("src");
+				$dom_logo = $xpath->query('*[@class="container"]/img', $main)->item(0);
+				if($dom_logo){
+					$clic->logoUrl = $dom_logo->getAttribute("src");
+				}
 				$clic->area = $xpath->query('table/tr/td[@class="taulaInfoCol"]', $main)->item(0)->nodeValue;
 				$clic->nivell = $xpath->query('table/tr/td[@class="taulaInfoCol"]', $main)->item(1)->nodeValue;
 				$clic->llicencia = $xpath->query('table/tr/td[@class="taulaInfoCol"]', $main)->item(3)->nodeValue;
@@ -132,6 +151,10 @@ class ClicCatalegManager{
 	
 	private function compareEndString($str, $end){
 		return substr_compare($str, $end, -strlen($end), strlen($end)) === 0;
+	}
+	
+	private function trimUnicode($s){
+		return preg_replace('/^\p{Z}+|\p{Z}+$/u', '', $s);
 	}
 	
     /*  -----  Singleton pattern ----- */

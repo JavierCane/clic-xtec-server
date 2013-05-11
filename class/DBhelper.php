@@ -16,6 +16,7 @@ define("DB_PASSWORD", "xxxx");
 
 */
 
+
 class DBhelper{
     private $db;
 
@@ -23,7 +24,7 @@ class DBhelper{
     function __construct() {
 		$this->db = new PDO(''.DB_DRIVER.':host='.DB_HOST.';dbname='.DB_DBNAME.';charset=utf8', 
 							DB_USERNAME, DB_PASSWORD);
-		$this->db -> exec("SET CHARACTER SET utf8");
+		$this->db->exec("SET CHARACTER SET utf8");
     }
 
     public function query($sql){
@@ -63,6 +64,10 @@ class DBhelper{
 	public function rollback(){
         return $this->db->rollback();
 	}
+/*
+    echo "\nPDO::errorInfo():\n";
+    print_r($stmt->errorInfo());
+*/
     /*  -----  Singleton pattern ----- */
 
     // singleton instance (es crida: $t = CLASSNAME::getInstance();)

@@ -2,45 +2,21 @@
 include "class/includes.php";
 
 header('Content-Type: text/html; charset=utf-8');
-error_reporting(E_ERROR | E_PARSE);
+//error_reporting(E_ERROR | E_PARSE);
 
+$lang2 = "ca";
 
 echo "<pre>";
 
-$id = $_REQUEST['id'];
-$lang = $_REQUEST['lang'];
-$lang2 = $_REQUEST['lang2'];
-
 $ccm = ClicCatalegManager::getInstance();
-if(!$id){
-	$list = $ccm->obtenirListIdClicXTEC($id);
-	
-	$i = 1;
-	foreach($list as $item){
-		$id = $item['id'];
-		echo $id . " lang: ".implode(",", $item['lang'])."<br>";
-		foreach($item['lang'] as $lang){
-			$list_clic = $ccm->obtenirClicXTEC($id,$lang);
-			$res = array();
-			foreach($list_clic as $clic){
-				echo $i ." Guardem el clic ".$clic->titol['es']." (id: ".$clic->id.")<br>";
-				$ccm->guardarClic($clic);
-				//array_push($res, $clic->getPublicClass($lang2));
-				$i++;
-			}
-		}
-	}
-}
-else{
-	$list_clic = $ccm->obtenirClicXTEC($id,$lang);
-	$res = array();
-	foreach($list_clic as $clic){
-		$ccm->guardarClic($clic);
-		array_push($res, $clic->getPublicClass($lang2));
-	}
-	echo pretty_json(json_encode($res));
-}
 
+$llista = $ccm->getAllClics(0, 100);
+
+$res = array();
+foreach($llista as $clic){
+	array_push($res, $clic->getPublicClass($lang2));
+}
+echo pretty_json(json_encode($res));
 
 function pretty_json($json) {
     $result = '';

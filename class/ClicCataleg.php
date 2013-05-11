@@ -83,6 +83,20 @@ class ClicCataleg{
 		$sql = "REPLACE INTO ".ClicCataleg::$TAULA." (".$part1.") VALUES (".$part2 .") ";
 		return $sql;
 	}
-	
+	public function rowMapper($row){
+		$this->id = $row['id'];
+		$this->titol = json_decode($row['titol'], true);
+		$this->descripcio = json_decode($row['descripcio'], true);
+		$this->autors = $row['autors'];
+		$this->llicencia = $row['llicencia'];
+		$this->nivell = $row['nivell'];
+		$this->area = $row['area'];
+		$this->logoUrl = $row['logoUrl'];
+		$this->urlBase = $row['urlBase'];
+		$this->inst = $row['inst'];
+		$this->clicPrincipal = $row['clicPrincipal'];
+		$this->clicsAdicionals = json_decode($row['clicsAdicionals'], true);
+		$this->tipusActivitats = json_decode($row['tipusActivitats'], true);
+	}
 }
 ?>
