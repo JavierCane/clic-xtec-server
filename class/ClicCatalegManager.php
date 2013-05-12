@@ -30,6 +30,7 @@ class ClicCatalegManager{
 		
 		$html = HTML::do_GET($this->url_llista);
 		$dom = new DOMDocument();
+		libxml_use_internal_errors(true);
 		$dom->loadHTML($html);
 		$xpath = new DOMXPath($dom);
 
@@ -62,6 +63,7 @@ class ClicCatalegManager{
 		foreach($this->idiomes as $idioma){
 			$html = HTML::do_GET($this->url_base."act_".$idioma.".jsp?id=".$id);
 			$dom = new DOMDocument();
+			libxml_use_internal_errors(true);
 			$dom->loadHTML($html);
 			$xpath = new DOMXPath($dom);
 
@@ -147,6 +149,20 @@ class ClicCatalegManager{
 		} catch (Exception $e) {
 			echo "Failed: " . $e->getMessage();
 		}
+	}
+	
+	public function guardarBatchClics($array_batch){
+		$db = DBhelper::getInstance();
+		try {
+			$db->execBatchPreparedStatement(ClicCataleg::$SQL, $array_batch);
+		} catch (Exception $e) {
+			echo "Failed: " . $e->getMessage();
+		}
+	}
+	
+	public function deleteAllClics(){
+		$db = DBhelper::getInstance();
+		$db->exec("DELETE FROM ".ClicCataleg::$TAULA."");
 	}
 	
 	private function compareEndString($str, $end){

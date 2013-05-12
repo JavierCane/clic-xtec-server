@@ -57,6 +57,18 @@ class DBhelper{
 		return $stmt->rowCount();
 	}
 	
+	/* $array_values és un array d'arrays similars al de execPreparedStatement */
+	public function execBatchPreparedStatement($sql, $array_batch){
+		$stmt = $this->db->prepare($sql);
+		foreach($array_batch as $array_values){
+			$stmt->execute($array_values);
+		}
+	}
+
+	public function beginTransaction(){
+        return $this->db->beginTransaction();
+	}
+	
 	public function commit(){
         return $this->db->commit();
 	}

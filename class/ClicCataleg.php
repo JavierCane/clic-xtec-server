@@ -1,6 +1,7 @@
 <?
 class ClicCataleg{
 	public static $TAULA = "DROIDCLIC_clics";
+	public static $SQL = "REPLACE INTO DROIDCLIC_clics (id,titol,descripcio,autors,llicencia,nivell,area,logoUrl,urlBase,inst,clicPrincipal,clicsAdicionals,tipusActivitats) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 	private $id;
 	private $titol;
 	private $descripcio;
@@ -64,6 +65,24 @@ class ClicCataleg{
 		$t->clicsAdicionals = $this->clicsAdicionals;
 		$t->tipusActivitats = $this->tipusActivitats;
 		return $t;
+	}
+	
+	public function getPreparedStatementsArray(){
+		return array(
+			addslashes($this->id), 
+			addslashes(json_encode($this->titol)), 
+			addslashes(json_encode($this->descripcio)), 
+			addslashes($this->autors),
+			addslashes($this->llicencia), 
+			addslashes($this->nivell),
+			addslashes($this->area),
+			addslashes($this->logoUrl),
+			addslashes($this->urlBase),
+			addslashes($this->inst),
+			addslashes($this->clicPrincipal),
+			addslashes(json_encode($this->clicsAdicionals)),
+			addslashes(json_encode($this->tipusActivitats))
+		);
 	}
 	
 	public function getSQL(){
