@@ -1,5 +1,5 @@
 <?
-class ClicCatalegManager{
+class CtrlClicCataleg{
 	public $conversio = array(	"el"=>"grec","ca"=>"català","eu"=>"basc","es"=>"espanyol",
 								"gl"=>"gallec","en"=>"anglès","sv"=>"suec","rmq"=>"caló","de"=>"alemany",
 								"pt"=>"portuguès", "fr"=>"francès","eo"=>"esperanto","it"=>"italià",
@@ -117,7 +117,6 @@ class ClicCatalegManager{
 			$this->obtenirClicsFromXMLInst($t);
 			array_push($res,$t);
 		}
-set_time_limit(10000);
 		return $res;
 	}
 	

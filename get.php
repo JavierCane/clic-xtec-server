@@ -8,7 +8,7 @@ $lang2 = "ca";
 
 echo "<pre>";
 
-$ccm = ClicCatalegManager::getInstance();
+$ccm = CtrlClicCataleg::getInstance();
 
 $llista = $ccm->getAllClics(0, 100);
 

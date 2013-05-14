@@ -9,7 +9,7 @@ $start = (float) array_sum(explode(' ',microtime()));
 
 echo "<pre>";
 
-$ccm = ClicCatalegManager::getInstance();
+$ccm = CtrlClicCataleg::getInstance();
 $list = $ccm->obtenirListIdClicXTEC($id);
 
 // Esborrem tots els antics:
@@ -28,7 +28,7 @@ foreach($list as $item){
 			echo "[". sprintf("%.4f", (((float) array_sum(explode(' ',microtime())))-$start))."]<br>";
 		}
 	}
-	if($i % 100 == 0 && count($array_batch)>0 ){
+	if(count($array_batch) % 20 == 0 && count($array_batch)>0 ){
 		// Cada 100  guardem els clics
 		$ccm->guardarBatchClics($array_batch);
 		$array_batch = array();

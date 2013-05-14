@@ -7,6 +7,6 @@ include_once "DBhelper.php";
 include_once "HTML.php";
 
 include_once "ClicCataleg.php";
-include_once "ClicCatalegManager.php";
+include_once "CtrlClicCataleg.php";
 
 ?>

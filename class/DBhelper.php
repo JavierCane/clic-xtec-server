@@ -76,6 +76,11 @@ class DBhelper{
 	public function rollback(){
         return $this->db->rollback();
 	}
+
+	public function errorInfo(){
+		return $this->db->errorInfo();
+	}
+	
 /*
     echo "\nPDO::errorInfo():\n";
     print_r($stmt->errorInfo());
