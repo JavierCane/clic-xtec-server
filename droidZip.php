@@ -1,46 +1,22 @@
 <?php
 
-require_once('pclzip.lib.php');
-require_once('functionsDroid.php');
+require_once('class/pclzip.lib.php');
+require_once('class/functionsDroid.php');
+require_once('class/CtrlPerfiles.php');
 
-/* ---------CONSTANTES-----------*/
-$CALIDAD = 70; //En porcentage
-/* ----------MOVIL----------*/
-$MOBILEWIDTH = 480;
-$MOBILEHEIGHT = 320;
-$EXTENSION_MOBILE = "dclic-m";
-/* ----------TABLET----------*/
-$TABLETWIDTH=1024;
-$TABLETHEIGHT = 760;
-$EXTENSION_TABLET = "dclic-t";
-/* --------------------*/
+//Calidad de la imagen final
+$CALIDAD = 70;
 
-if (!$_GET['url']) {
-    die('Falta la url - Ej: droidZip.php?url=URL&tipus=NUM');
+
+if (!$_GET['url'] || !$_GET['width'] || !$_GET['height']) {
+    die('USAGE: droidZip.php?url=URL&width=WIDTH&height=HEIGHT');
 }
-else if (!$_GET['tipus']) {
-    die('Falta el tipus - Ej: droidZip.php?url=URL&tipus=NUM');
-}
+
 
 //Recogemos parametros
 $file = $_GET['url'];
-$tipus = $_GET['tipus'];
-
-//Segun el tipo optimizamos para mobil o para tablet
-switch ($tipus) 
-{
-    case 1: 
-    $width = $MOBILEWIDTH;
-    $height = $MOBILEHEIGHT;
-    $ext = $EXTENSION_MOBILE;
-    break;  
-
-    case 2: 
-    $width = $TABLETWIDTH;
-    $height = $TABLETHEIGHT;
-    $ext = $EXTENSION_TABLET;
-    break;   
-}
+$perfiles = CtrlPerfiles::getInstance();
+list($width,$height,$ext) = $perfiles->getDadesPerfil($_GET['width'],$_GET['height']);
 
 //Extraemos el nombre del archivo de la url
 $name = explode("/", $file);

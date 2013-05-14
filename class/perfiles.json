@@ -1,0 +1,18 @@
+{
+    "movilP": {
+        "width":"480",
+        "height":"320"
+    },
+    "movilM": {
+        "width":"640",
+        "height":"412"
+    },
+    "tabletP": {
+        "width":"760",
+        "height":"480"
+    },
+    "tabletM": {
+        "width":"1024",
+        "height":"760"
+    }
+}
