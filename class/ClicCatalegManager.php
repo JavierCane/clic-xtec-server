@@ -117,6 +117,7 @@ class ClicCatalegManager{
 			$this->obtenirClicsFromXMLInst($t);
 			array_push($res,$t);
 		}
+set_time_limit(10000);
 		return $res;
 	}
 	
