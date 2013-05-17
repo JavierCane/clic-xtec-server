@@ -1,20 +1,24 @@
 <?
 include "class/includes.php";
 
-header('Content-Type: text/html; charset=utf-8');
+header('Content-Type: text/plain; charset=utf-8');
 //error_reporting(E_ERROR | E_PARSE);
 
-$lang2 = "ca";
+$lang = $_REQUEST['lang'];
+$inici = (is_numeric($_REQUEST['inici']))?$_REQUEST['inici']:0;
+$limit = (is_numeric($_REQUEST['limit']))?$_REQUEST['limit']:50;
 
-echo "<pre>";
+if(!$lang){
+	die("Falta parametre lang");
+}
 
 $ccm = CtrlClicCataleg::getInstance();
 
-$llista = $ccm->getAllClics(0, 100);
+$llista = $ccm->getAllClics($inici, $limit);
 
 $res = array();
 foreach($llista as $clic){
-	array_push($res, $clic->getPublicClass($lang2));
+	array_push($res, $clic->getPublicClass($lang));
 }
 echo pretty_json(json_encode($res));
 

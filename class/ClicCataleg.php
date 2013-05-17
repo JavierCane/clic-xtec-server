@@ -84,6 +84,25 @@ class ClicCataleg{
 			addslashes(json_encode($this->tipusActivitats))
 		);
 	}
+
+	public function getSQLValues($header = 0){
+		if($header){
+			foreach($this as $var => $value) {
+				$res .= $var ."," ;
+			}
+		}
+		else{
+			foreach($this as $var => $value) {
+				if(!is_array($value)){
+					$res .= "'".addslashes($value)."',";
+				}
+				else{
+					$res .= "'".addslashes(json_encode($value))."',";
+				}
+			}
+		}
+		return "(".substr($res, 0, -1).")";
+	}
 	
 	public function getSQL(){
 

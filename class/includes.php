@@ -8,5 +8,6 @@ include_once "HTML.php";
 
 include_once "ClicCataleg.php";
 include_once "CtrlClicCataleg.php";
+include_once "CtrlParser.php";
 
 ?>

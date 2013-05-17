@@ -160,6 +160,26 @@ class CtrlClicCataleg{
 		}
 	}
 	
+	public function guardarInsertMutliple($array_values){
+		$clic = new ClicCataleg();
+		$header = $clic->getSQLValues(1);
+		$values = implode($array_values, ",");
+		$sql = "REPLACE INTO ".ClicCataleg::$TAULA." ".$header." VALUES ".$values ." ";
+		//echo $sql;
+		$db = DBhelper::getInstance();
+		
+		try {
+			$num = $db->exec($sql);
+			if($num < count($array_values)){
+				echo "S'han intentat insertar ".count($array_values)." quan realment s'han fet $num canvisa<br>";
+				print_r($db->errorInfo());
+			}
+		} catch (Exception $e) {
+			echo "Failed: " . $e->getMessage();
+		}
+		return $num;
+	}
+		
 	public function deleteAllClics(){
 		$db = DBhelper::getInstance();
 		$db->exec("DELETE FROM ".ClicCataleg::$TAULA."");
