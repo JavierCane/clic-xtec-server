@@ -1,15 +1,15 @@
 <?php
+require_once('class/includes.php');
 
 require_once('class/pclzip.lib.php');
 require_once('class/functionsDroid.php');
-require_once('class/CtrlPerfiles.php');
 
 //Calidad de la imagen final
 $CALIDAD = 70;
 
 
 if (!$_GET['url'] || !$_GET['width'] || !$_GET['height']) {
-    die('USAGE: droidZip.php?url=URL&width=WIDTH&height=HEIGHT');
+    die('USAGE: /clic/?url=URL&width=WIDTH&height=HEIGHT');
 }
 
 

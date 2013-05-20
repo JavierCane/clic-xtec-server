@@ -1,0 +1,11 @@
+Options -MultiViews
+
+RewriteEngine on
+
+RewriteRule ^clic/(.*)$ /droidZip.php?$1 [L,QSA]
+RewriteRule ^cataleg/(.*)$ /cataleg.php?$1 [L,QSA]
+RewriteRule ^perfil/(.*)$ /showPerfil.php?$1 [L,QSA]
+
+<IfModule mod_speling.c>
+CheckSpelling Off
+</IfModule>

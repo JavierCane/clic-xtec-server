@@ -4,7 +4,7 @@ require_once('Perfil.php');
 class CtrlPerfiles{
 
     private $perfiles;
-    private $ruta_json = "/Users/danielbalasteguijulian/Desktop/UNIVERSIDAD/GPS/clic-xtec-server/class/perfiles.json";
+    private $ruta_json;
     private static $instance;
 
     public static function getInstance() {
@@ -14,7 +14,8 @@ class CtrlPerfiles{
         return self::$instance; 
     }
 
-    function __construct() {
+    public function __construct() {
+        $this->ruta_json = $_SERVER[DOCUMENT_ROOT]."/class/perfiles.json";
         $perfiles = array();
         $json = file_get_contents($this->ruta_json);
         $json_a = json_decode($json, true);

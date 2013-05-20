@@ -26,7 +26,7 @@ class CtrlParser{
 					echo "$i [". sprintf("%.4f", (((float) array_sum(explode(' ',microtime())))-$start))."]<br>";
 				}
 			}
-			if($i % 50 == 0){
+			if(count($array_batch) > 50){
 				$num = $ccm->guardarInsertMutliple($array_batch);
 				echo "Guardem "+$num;
 				$array_batch = array();

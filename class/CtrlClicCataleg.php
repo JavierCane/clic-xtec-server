@@ -130,8 +130,13 @@ class CtrlClicCataleg{
 		$dom = new DOMDocument();
 		$dom->loadHTML($html);
 		$xpath = new DOMXPath($dom);
-
-		$clic->clicPrincipal = $xpath->query('//shortcut')->item(0)->getAttribute("project");
+		$anchor = $xpath->query('//shortcut')->item(0);
+		if($anchor){
+			$clic->clicPrincipal = $anchor->getAttribute("project");
+		}
+		else{
+			echo "No s'ha trobat fitxer principal del clic id:".$clic->id." titol".$clic->titol['ca'];
+		}
 		$list_clic = $xpath->query('//file');
 		foreach($list_clic as $t){
 			$src = $t->getAttribute("src");
