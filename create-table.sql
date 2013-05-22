@@ -12,5 +12,6 @@ logoUrl varchar(255),
 urlBase varchar(255),
 inst varchar(255),
 clicPrincipal varchar(255),
-clicsAdicionals varchar(1024)
+clicsAdicionals varchar(1024),
+tipusActivitats varchar(1024)
 )DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci
