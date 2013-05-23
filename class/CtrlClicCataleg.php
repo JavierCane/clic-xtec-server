@@ -1,20 +1,44 @@
 <?
 class CtrlClicCataleg{
-	public $conversio = array(	"el"=>"grec","ca"=>"català","eu"=>"basc","es"=>"espanyol",
+	public $conversio = array(	
+								"el"=>"grec","ca"=>"català","eu"=>"basc","es"=>"espanyol",
 								"gl"=>"gallec","en"=>"anglès","sv"=>"suec","rmq"=>"caló","de"=>"alemany",
 								"pt"=>"portuguès", "fr"=>"francès","eo"=>"esperanto","it"=>"italià",
 								"la"=>"llatí","oc"=>"occità","zh"=>"xinès","arn"=>"araucà","ro"=>"romanès"
 							);
+
+	public $areas = array(
+							"lleng"=>"Llengües",
+							"mat"=>"Matemàtiques",
+							"soc"=>"Ciències socials",
+							"exp"=>"Ciències experimentals",
+							"mus"=>"Música",
+							"vip"=>"Visual i plàstica",
+							"ef"=>"Educació física",
+							"tec"=>"Tecnologies",
+							"div"=>"Diversos"
+					);
+
+	public $nivells = array(
+							"INF"=>"Infantil (3-6)",
+							"PRI"=>"Primària (6-12)",
+							"SEC"=>"Secundària (12-16)",
+							"BTX"=>"Batxillerat (16-18)"
+						);
+
     public $idiomes = array("es","ca","en");
     public $url_base = "http://clic.xtec.cat/db/";
-	public $url_llista = "http://clic.xtec.cat/db/listact_ca.jsp?num=100000";
+	public $url_llista = "http://clic.xtec.cat/db/listact_ca.jsp?num=100";//100000";
 
     public function __construct() {
     }
 
-	public function getAllClics($inici = 0, $limit = 50){
+	public function getAllClics($lang, $inici = 0, $limit = 50){
 		$db = DBhelper::getInstance();
-		$sql = "SELECT * FROM ".ClicCataleg::$TAULA." WHERE 1 LIMIT ".intval($inici).", ".intval($limit)."";
+		if($lang){
+			$sql_filtre = " AND lang = '".stripslashes($lang)."' ";
+		}
+		$sql = "SELECT * FROM ".ClicCataleg::$TAULA." WHERE 1 ".$sql_filtre." LIMIT ".intval($inici).", ".intval($limit)."";
 		$list = $db->fetchAllPreparedStatement($sql, array());
 		$res = array();
 		foreach($list as $row){
@@ -59,6 +83,7 @@ class CtrlClicCataleg{
 		$llista_clic_inst = array();
 		$clic = new ClicCataleg();
 		$clic->id = $id;
+		$clic->lang = $lang;
 		$primer_cop = true;
 		foreach($this->idiomes as $idioma){
 			$html = HTML::do_GET($this->url_base."act_".$idioma.".jsp?id=".$id);
@@ -71,7 +96,7 @@ class CtrlClicCataleg{
 
 			$clic->addTitol($idioma, $xpath->query('*[@class="titol"]', $main)->item(0)->nodeValue);
 			$clic->addDescripcio($idioma, $xpath->query('*[@class="desc"]', $main)->item(0)->nodeValue);
-			
+
 			// Com que obtenim les dades dels tres idiomes, les dades que no canvien les obtenim només el primer cop
 			if($primer_cop){
 				$primer_cop = false;
@@ -80,8 +105,13 @@ class CtrlClicCataleg{
 				if($dom_logo){
 					$clic->logoUrl = $dom_logo->getAttribute("src");
 				}
-				$clic->area = $xpath->query('table/tr/td[@class="taulaInfoCol"]', $main)->item(0)->nodeValue;
-				$clic->nivell = $xpath->query('table/tr/td[@class="taulaInfoCol"]', $main)->item(1)->nodeValue;
+				
+				$area = $xpath->query('table/tr/td[@class="taulaInfoCol"]', $main)->item(0)->nodeValue;
+				$clic->area = $this->extractArea($area);
+
+				$nivell = $xpath->query('table/tr/td[@class="taulaInfoCol"]', $main)->item(1)->nodeValue;
+				$clic->nivell = $this->extractNivell($nivell);
+
 				$clic->llicencia = $xpath->query('table/tr/td[@class="taulaInfoCol"]', $main)->item(3)->nodeValue;
 			}
 			// Els .inst del clic només l'obtenim un cop, i ha de ser de la pàgina en català
@@ -118,6 +148,24 @@ class CtrlClicCataleg{
 			array_push($res,$t);
 		}
 		return $res;
+	}
+
+	public function extractArea($area){
+		return $area;
+
+		//TODO: extreure l'area i guardar-ho per separat per poder filtrar
+		$match = explode(",", $area);
+		array_walk_recursive($match, "trim");
+		return $match;
+	}
+
+	public function extractNivell($nivell){
+		return $nivell;
+
+		//TODO: extreure el nivell i guardar-ho per separat per poder filtrar
+		$match = explode(",", $nivell);
+		array_walk_recursive($match, "trim");
+		return $match;
 	}
 	
 	public function extractBaseURLFromInst($url){

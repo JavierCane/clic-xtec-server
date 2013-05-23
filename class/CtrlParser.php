@@ -24,6 +24,7 @@ class CtrlParser{
 					array_push($array_batch, $clic->getSQLValues());
 					$i++; 
 					echo "$i [". sprintf("%.4f", (((float) array_sum(explode(' ',microtime())))-$start))."]<br>";
+                    ob_flush();
 				}
 			}
 			if(count($array_batch) > 50){

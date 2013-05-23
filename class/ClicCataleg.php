@@ -1,7 +1,7 @@
 <?
 class ClicCataleg{
 	public static $TAULA = "DROIDCLIC_clics";
-	public static $SQL = "REPLACE INTO DROIDCLIC_clics (id,titol,descripcio,autors,llicencia,nivell,area,logoUrl,urlBase,inst,clicPrincipal,clicsAdicionals,tipusActivitats) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+	public static $SQL = "REPLACE INTO DROIDCLIC_clics (id,titol,descripcio,lang,autors,llicencia,nivell,area,logoUrl,urlBase,inst,clicPrincipal,clicsAdicionals,tipusActivitats) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 	private $id;
 	private $titol;
 	private $descripcio;
@@ -9,6 +9,7 @@ class ClicCataleg{
 	private $autors;
 	private $llicencia;
 	private $nivell;
+	private $lang;
 	private $area;
 	private $logoUrl;
 	private $urlBase;
@@ -55,6 +56,7 @@ class ClicCataleg{
 		$t->titol = $this->titol[$lang];
 		$t->descripcio = $this->descripcio[$lang];
 		$t->autors = $this->autors;
+		$t->lang = $this->lang;
 		$t->llicencia = $this->llicencia;
 		$t->nivell = $this->nivell;
 		$t->area = $this->area;
@@ -72,6 +74,7 @@ class ClicCataleg{
 			addslashes($this->id), 
 			addslashes(json_encode($this->titol)), 
 			addslashes(json_encode($this->descripcio)), 
+			addslashes($thos->lang),
 			addslashes($this->autors),
 			addslashes($this->llicencia), 
 			addslashes($this->nivell),
@@ -125,6 +128,7 @@ class ClicCataleg{
 		$this->id = $row['id'];
 		$this->titol = json_decode($row['titol'], true);
 		$this->descripcio = json_decode($row['descripcio'], true);
+		$this->lang = $row['lang'];
 		$this->autors = $row['autors'];
 		$this->llicencia = $row['llicencia'];
 		$this->nivell = $row['nivell'];
