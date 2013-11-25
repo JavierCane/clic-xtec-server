@@ -20,16 +20,16 @@ if(HTML::getHTTPHeader("GPSAUTH") != md5("GPS_PASSWORD")){
 }
 
 $ccm = CtrlClicCataleg::getInstance();
-$clicsFiltres = $ccm->getClicsFiltres($lang, $inici, $limit, $nivell, $area);
+$all_clics = $ccm->getClicsFiltres($lang, $inici, $limit, $nivell, $area);
 
 $res = array();
-foreach($llista as $clic){
+foreach( $all_clics as $clic){
 	array_push($res, $clic->getPublicClass($lang_cataleg));
 }
 
 $json = json_encode($res);
 
-if($_GET['pretty']){
+if(isset( $_GET['pretty'])){
     echo PrettyJSON::pretty_json($json);
 }
 else{

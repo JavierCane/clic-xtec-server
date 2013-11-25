@@ -38,24 +38,35 @@ class CtrlClicCataleg{
     	$db = DBhelper::getInstance();
 		
 		//creem el filtre per recuperar les instancies
-		$filtres = array();
-        $filtres[] = 'lang = ' . PDO::quote( $lang );
-        if ( !empty ( $nivell ) ) $filtres[] = 'nivell = ' . PDO::quote( $nivell );
-        if ( !empty ( $area ) ) $filtres[] = 'area = ' . PDO::quote( $area );
+		$where_conditions_array = array();
+		$where_conditions_values = array();
 
-        $sql_filtre = " AND ". implode( $filtres, " AND " );
+        $where_conditions_array[] = 'lang = :lang';
+        $where_conditions_values[':lang'] = $lang;
 
+        if ( !empty ( $nivell ) ) {
+            $where_conditions_array[] = 'nivell = :nivell';
+            $where_conditions_values[':nivell'] = $nivell;
+        }
 
-		$sql = "SELECT * FROM ".ClicCataleg::$TAULA." WHERE 1 ".$sql_filtre." LIMIT ".intval($inici).", ".intval($limit)."";
-		$list = $db->fetchAllPreparedStatement($sql, array());
+        if ( !empty ( $area ) ) {
+            $where_conditions_array[] = 'area = :area';
+            $where_conditions_values[':area'] = $area;
+        }
+
+        $where = implode( $where_conditions_array, " AND " );
+
+		$sql = "SELECT * FROM " . ClicCataleg::$TAULA . " WHERE " . $where . " LIMIT " . intval( $inici ) . ", " . intval( $limit );
+
+		$list = $db->fetchAllPreparedStatement( $sql, $where_conditions_values );
 		$res = array();
 		foreach($list as $row){
 			$clic = new ClicCataleg();
 			$clic->rowMapper($row);
 			array_push($res, $clic);
 		}
-		return $res;
 
+		return $res;
     }
 	
 	public function obtenirListIdClicXTEC(){

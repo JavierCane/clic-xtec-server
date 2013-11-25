@@ -26,7 +26,7 @@ class HTML{
 		return $output;
 	}
 
-	public function getHTTPHeader($header){
+	public static function getHTTPHeader($header){
 		foreach (getallheaders() as $name => $value) {
 		    if(strtolower($name) == strtolower($header))
 		    		return $value;
