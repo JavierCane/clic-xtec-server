@@ -1,4 +1,4 @@
-<?
+<?–
 class CtrlClicCataleg{
 	public $conversio = array(	
 								"el"=>"grec","ca"=>"català","eu"=>"basc","es"=>"espanyol",
@@ -31,6 +31,25 @@ class CtrlClicCataleg{
 	public $url_llista = "http://clic.xtec.cat/db/listact_ca.jsp?num=100";//100000";
 
     public function __construct() {
+    }
+
+    public function getClicsFiltres($lang, $inici=0, $limit=0, $nivell, $area) {
+
+    	$db = DBhelper::getInstance();
+		
+		//creem el filtre per recuperar les instancies
+		$sql_filtre = " AND lang = '".stripslashes($lang)."' AND nivell = '".stripslashes($nivell)."' AND area = '".stripslashes($area)."'";
+
+		$sql = "SELECT * FROM ".ClicCataleg::$TAULA." WHERE 1 ".$sql_filtre." LIMIT ".intval($inici).", ".intval($limit)."";
+		$list = $db->fetchAllPreparedStatement($sql, array());
+		$res = array();
+		foreach($list as $row){
+			$clic = new ClicCataleg();
+			$clic->rowMapper($row);
+			array_push($res, $clic);
+		}
+		return $res;
+
     }
 
 	public function getAllClics($lang, $inici = 0, $limit = 50){
