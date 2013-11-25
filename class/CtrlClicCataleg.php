@@ -1,4 +1,4 @@
-<?–
+<?
 class CtrlClicCataleg{
 	public $conversio = array(	
 								"el"=>"grec","ca"=>"català","eu"=>"basc","es"=>"espanyol",
@@ -33,12 +33,18 @@ class CtrlClicCataleg{
     public function __construct() {
     }
 
-    public function getClicsFiltres($lang, $inici=0, $limit=0, $nivell, $area) {
+    public function getClicsFiltres($lang, $inici, $limit, $nivell, $area) {
 
     	$db = DBhelper::getInstance();
 		
 		//creem el filtre per recuperar les instancies
-		$sql_filtre = " AND lang = '".stripslashes($lang)."' AND nivell = '".stripslashes($nivell)."' AND area = '".stripslashes($area)."'";
+		$filtres = array();
+        $filtres[] = 'lang = ' . PDO::quote( $lang );
+        if ( !empty ( $nivell ) ) $filtres[] = 'nivell = ' . PDO::quote( $nivell );
+        if ( !empty ( $area ) ) $filtres[] = 'area = ' . PDO::quote( $area );
+
+        $sql_filtre = " AND ". implode( $filtres, " AND " );
+
 
 		$sql = "SELECT * FROM ".ClicCataleg::$TAULA." WHERE 1 ".$sql_filtre." LIMIT ".intval($inici).", ".intval($limit)."";
 		$list = $db->fetchAllPreparedStatement($sql, array());
@@ -51,22 +57,6 @@ class CtrlClicCataleg{
 		return $res;
 
     }
-
-	public function getAllClics($lang, $inici = 0, $limit = 50){
-		$db = DBhelper::getInstance();
-		if($lang){
-			$sql_filtre = " AND lang = '".stripslashes($lang)."' ";
-		}
-		$sql = "SELECT * FROM ".ClicCataleg::$TAULA." WHERE 1 ".$sql_filtre." LIMIT ".intval($inici).", ".intval($limit)."";
-		$list = $db->fetchAllPreparedStatement($sql, array());
-		$res = array();
-		foreach($list as $row){
-			$clic = new ClicCataleg();
-			$clic->rowMapper($row);
-			array_push($res, $clic);
-		}
-		return $res;
-	}
 	
 	public function obtenirListIdClicXTEC(){
 		$res = array();

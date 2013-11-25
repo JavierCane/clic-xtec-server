@@ -8,8 +8,8 @@ $lang = $_GET['lang'];
 $lang_cataleg = $_GET['lang_cataleg'];
 $inici = (is_numeric($_GET['inici']))?$_GET['inici']:0;
 $limit = (is_numeric($_GET['limit']))?$_GET['limit']:50;
-$nivell = $_GET['nivell'];
-$area = $_GET['area'];
+$nivell = (!isset($_GET['nivell']))?"":$_GET['nivell'];
+$area = (!isset($_GET['area']))?"":$_GET['area'];
 
 if(!$lang_cataleg){
     die('USAGE: /cataleg/?lang=LANG{&lang_cataleg=LANG_CATALEG}{&limit=LIMIT}{&inici=INICI}');
@@ -20,13 +20,7 @@ if(HTML::getHTTPHeader("GPSAUTH") != md5("GPS_PASSWORD")){
 }
 
 $ccm = CtrlClicCataleg::getInstance();
-
-if ($nivell != '' or $area != '') {
-	//crida custom per recuperar els clicks en funcio dels filtres especificats
-	$clicsFiltres = $ccm->getClicsFiltres($lang, $inici, $limit, $nivell, $area);
-} else {
-	$llista = $ccm->getAllClics($lang, $inici, $limit);	
-}
+$clicsFiltres = $ccm->getClicsFiltres($lang, $inici, $limit, $nivell, $area);
 
 $res = array();
 foreach($llista as $clic){
