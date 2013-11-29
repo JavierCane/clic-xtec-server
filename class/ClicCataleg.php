@@ -1,7 +1,6 @@
 <?
 class ClicCataleg{
 	public static $TAULA = "DROIDCLIC_clics";
-	public static $SQL = "REPLACE INTO DROIDCLIC_clics (id,titol,descripcio,lang,autors,llicencia,nivell,area,logoUrl,urlBase,inst,clicPrincipal,clicsAdicionals,tipusActivitats) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 	private $id;
 	private $titol;
 	private $descripcio;
