@@ -33,31 +33,49 @@ class CtrlClicCataleg{
     public function __construct() {
     }
 
-    public function getClicsFiltres($lang, $inici, $limit, $nivell, $area) {
+    public function getClicsFiltres($lang, $inici, $limit, $nivell, $area, $cerca) {
 
     	$db = DBhelper::getInstance();
 		
 		//creem el filtre per recuperar les instancies
+		$where_conditions_array_nivel = array();
+		$where_conditions_array_area = array();
 		$where_conditions_array = array();
 		$where_conditions_values = array();
 
-        $where_conditions_array[] = 'lang = :lang';
-        $where_conditions_values[':lang'] = $lang;
-
         if ( !empty ( $nivell ) ) {
-            $where_conditions_array[] = 'nivell = :nivell';
-            $where_conditions_values[':nivell'] = $nivell;
+            $nivells = explode(',', $nivell);
+            foreach($nivells as $niv){
+                $where_conditions_array_nivel[] = 'nivel_'.$niv.' = :nivell'.$niv;
+                $where_conditions_values[':nivell'.$niv] = 1;
+            }
+            $where_conditions_array[] = '('. implode($where_conditions_array_nivel, ' OR ').')';
+
         }
 
         if ( !empty ( $area ) ) {
-            $where_conditions_array[] = 'area = :area';
-            $where_conditions_values[':area'] = $area;
+            $areas = explode(',', $area);
+            foreach($areas as $a){
+                $where_conditions_array_area[] = 'area_'.$a.' = :area'.$a;
+                $where_conditions_values[':area'.$a] = 1;
+            }
+            $where_conditions_array[] = '('. implode($where_conditions_array_area, ' OR ').')';
+        }
+
+        if ( !empty ( $lang ) ) {
+            $langs = explode(',', $lang);
+            $where_conditions_array[] = 'lang in (\''.implode("','", $langs).'\')';
+        }
+
+        if ( !empty ( $cerca ) ) {
+            $where_conditions_array[] = '(titol like :cerca or descripcio like :cerca)';
+            $where_conditions_values[':cerca'] = '%'.$cerca.'%';
         }
 
         $where = implode( $where_conditions_array, " AND " );
 
 		$sql = "SELECT * FROM " . ClicCataleg::$TAULA . " WHERE " . $where . " LIMIT " . intval( $inici ) . ", " . intval( $limit );
-
+        echo $sql;
 		$list = $db->fetchAllPreparedStatement( $sql, $where_conditions_values );
 		$res = array();
 		foreach($list as $row){
