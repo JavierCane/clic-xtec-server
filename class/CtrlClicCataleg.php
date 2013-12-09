@@ -75,7 +75,6 @@ class CtrlClicCataleg{
         $where = implode( $where_conditions_array, " AND " );
 
 		$sql = "SELECT * FROM " . ClicCataleg::$TAULA . " WHERE " . $where . " LIMIT " . intval( $inici ) . ", " . intval( $limit );
-        echo $sql;
 		$list = $db->fetchAllPreparedStatement( $sql, $where_conditions_values );
 		$res = array();
 		foreach($list as $row){
