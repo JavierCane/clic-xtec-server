@@ -252,6 +252,30 @@ class CtrlClicCataleg{
 		} catch (Exception $e) {
 			echo "Failed: " . $e->getMessage();
 		}
+
+        try{
+            $db->exec(" UPDATE ".ClicCataleg::$TAULA." SET area_lleng = b'1' WHERE area LIKE '%Lenguas%';
+                        UPDATE ".ClicCataleg::$TAULA." SET area_mat = b'1' WHERE area LIKE '%Matemáticas%';
+                        UPDATE ".ClicCataleg::$TAULA." SET area_soc = b'1' WHERE area LIKE '%Ciencias sociales%';
+                        UPDATE ".ClicCataleg::$TAULA." SET area_exp = b'1' WHERE area LIKE '%Ciencias experimentales%';
+                        UPDATE ".ClicCataleg::$TAULA." SET area_mus = b'1' WHERE area LIKE '%Música%';
+                        UPDATE ".ClicCataleg::$TAULA." SET area_vip = b'1' WHERE area LIKE '%Plástica y visual%';
+                        UPDATE ".ClicCataleg::$TAULA." SET area_ef = b'1' WHERE area LIKE '%***%';
+                        UPDATE ".ClicCataleg::$TAULA." SET area_tec = b'1' WHERE area LIKE '%Tecnología%';
+                        UPDATE ".ClicCataleg::$TAULA." SET area_div = b'1' WHERE area LIKE '%Diversos%';
+
+
+
+                        UPDATE ".ClicCataleg::$TAULA." SET nivel_INF = b'1' WHERE area LIKE '%Infantil (3-6)%';
+                        UPDATE ".ClicCataleg::$TAULA." SET nivel_PRI = b'1' WHERE area LIKE '%Primaria (6-12)%';
+                        UPDATE ".ClicCataleg::$TAULA." SET nivel_SEC = b'1' WHERE area LIKE '%Secundaria (12-16)%';
+                        UPDATE ".ClicCataleg::$TAULA." SET nivel_BTX = b'1' WHERE area LIKE '%Bachillerato (16-18)%';
+                        ");
+
+        } catch (Exception $e) {
+            echo "Failed: " . $e->getMessage();
+        }
+
 		return $num;
 	}
 		
