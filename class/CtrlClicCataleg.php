@@ -28,7 +28,7 @@ class CtrlClicCataleg{
 
     public $idiomes = array("es","ca","en");
     public $url_base = "http://clic.xtec.cat/db/";
-	public $url_llista = "http://clic.xtec.cat/db/listact_ca.jsp?num=1000";//100000";
+    public $url_llista = "http://clic.xtec.cat/db/listact_ca.jsp?num=100&from=";//100000";
 
     public function __construct() {
     }
@@ -210,17 +210,26 @@ class CtrlClicCataleg{
 			$src = $t->getAttribute("src");
 			if(!$this->compareEndString($src, ".inst") && $src != $clic->clicPrincipal){
                 if( $this->compareEndString($src, ".zip") ){
-    				$clic->addClicAdicional($src);
-                }
-			}
-		}
+				    $clic->addClicAdicional($src);
+			    }
+		    }
+	    }
 	}
-    
+
 	public function guardarClic($clic){
 		$db = DBhelper::getInstance();
 		
 		try {
 			$num = $db->exec($clic->getSQL());
+		} catch (Exception $e) {
+			echo "Failed: " . $e->getMessage();
+		}
+	}
+	
+	public function guardarBatchClics($array_batch){
+		$db = DBhelper::getInstance();
+		try {
+			$db->execBatchPreparedStatement(ClicCataleg::$SQL, $array_batch);
 		} catch (Exception $e) {
 			echo "Failed: " . $e->getMessage();
 		}
