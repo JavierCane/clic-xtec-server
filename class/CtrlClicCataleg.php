@@ -266,10 +266,10 @@ class CtrlClicCataleg{
 
 
 
-                        UPDATE ".ClicCataleg::$TAULA." SET nivel_INF = b'1' WHERE area LIKE '%Infantil (3-6)%';
-                        UPDATE ".ClicCataleg::$TAULA." SET nivel_PRI = b'1' WHERE area LIKE '%Primaria (6-12)%';
-                        UPDATE ".ClicCataleg::$TAULA." SET nivel_SEC = b'1' WHERE area LIKE '%Secundaria (12-16)%';
-                        UPDATE ".ClicCataleg::$TAULA." SET nivel_BTX = b'1' WHERE area LIKE '%Bachillerato (16-18)%';
+                        UPDATE ".ClicCataleg::$TAULA." SET nivel_INF = b'1' WHERE nivell LIKE '%Infantil (3-6)%';
+                        UPDATE ".ClicCataleg::$TAULA." SET nivel_PRI = b'1' WHERE nivell LIKE '%Primaria (6-12)%';
+                        UPDATE ".ClicCataleg::$TAULA." SET nivel_SEC = b'1' WHERE nivell LIKE '%Secundaria (12-16)%';
+                        UPDATE ".ClicCataleg::$TAULA." SET nivel_BTX = b'1' WHERE nivell LIKE '%Bachillerato (16-18)%';
                         ");
 
         } catch (Exception $e) {
