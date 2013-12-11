@@ -28,11 +28,22 @@ class CtrlClicCataleg{
 
     public $idiomes = array("es","ca","en");
     public $url_base = "http://clic.xtec.cat/db/";
-    public $url_llista = "http://clic.xtec.cat/db/listact_ca.jsp?num=100&from=";//100000";
+    public $url_llista = "http://clic.xtec.cat/db/listact_ca.jsp?num=100&from=";
 
     public function __construct() {
     }
 
+    /** Function to get clics by search filters
+     * @param $lang Clics language
+     * @param $inici First row to select
+     * @param $limit Limit the number of results
+     * @param $nivell Clic grade
+     * @param $area Clic area
+     * @param $cerca Search by clic name
+     *
+     *
+     * @return array Array of all clics matching the query
+     */
     public function getClicsFiltres($lang, $inici, $limit, $nivell, $area, $cerca) {
 
     	$db = DBhelper::getInstance();
@@ -44,32 +55,32 @@ class CtrlClicCataleg{
 		$where_conditions_values = array();
 
         if ( !empty ( $nivell ) ) {
-            $nivells = explode(',', $nivell);
-            foreach($nivells as $niv){
-                $where_conditions_array_nivel[] = 'nivel_'.$niv.' = :nivell'.$niv;
+            $nivells = explode( ',', $nivell );
+            foreach( $nivells as $niv ){
+                $where_conditions_array_nivel[] = 'nivel_' . $niv . ' = :nivell' . $niv;
                 $where_conditions_values[':nivell'.$niv] = 1;
             }
-            $where_conditions_array[] = '('. implode($where_conditions_array_nivel, ' OR ').')';
+            $where_conditions_array[] = '(' . implode( $where_conditions_array_nivel, ' OR ' ) . ')';
 
         }
 
         if ( !empty ( $area ) ) {
-            $areas = explode(',', $area);
-            foreach($areas as $a){
-                $where_conditions_array_area[] = 'area_'.$a.' = :area'.$a;
+            $areas = explode( ',', $area );
+            foreach( $areas as $a ){
+                $where_conditions_array_area[] = 'area_' . $a . ' = :area' . $a;
                 $where_conditions_values[':area'.$a] = 1;
             }
-            $where_conditions_array[] = '('. implode($where_conditions_array_area, ' OR ').')';
+            $where_conditions_array[] = '(' . implode( $where_conditions_array_area, ' OR ' ) . ')';
         }
 
         if ( !empty ( $lang ) ) {
-            $langs = explode(',', $lang);
-            $where_conditions_array[] = 'lang in (\''.implode("','", $langs).'\')';
+            $langs = explode( ',', $lang );
+            $where_conditions_array[] = 'lang in (\'' . implode( "','", $langs ) . '\')';
         }
 
         if ( !empty ( $cerca ) ) {
             $where_conditions_array[] = '(titol like :cerca or descripcio like :cerca)';
-            $where_conditions_values[':cerca'] = '%'.$cerca.'%';
+            $where_conditions_values[':cerca'] = '%' . $cerca . '%';
         }
 
         $where = implode( $where_conditions_array, " AND " );
@@ -77,10 +88,10 @@ class CtrlClicCataleg{
 		$sql = "SELECT * FROM " . ClicCataleg::$TAULA . " WHERE " . $where . " LIMIT " . intval( $inici ) . ", " . intval( $limit );
 		$list = $db->fetchAllPreparedStatement( $sql, $where_conditions_values );
 		$res = array();
-		foreach($list as $row){
+		foreach( $list as $row ){
 			$clic = new ClicCataleg();
-			$clic->rowMapper($row);
-			array_push($res, $clic);
+			$clic->rowMapper( $row );
+			array_push( $res, $clic );
 		}
 
 		return $res;
@@ -189,8 +200,6 @@ class CtrlClicCataleg{
 
 	public function extractArea($area){
 		return $area;
-
-		//TODO: extreure l'area i guardar-ho per separat per poder filtrar
 		$match = explode(",", $area);
 		array_walk_recursive($match, "trim");
 		return $match;
@@ -198,8 +207,6 @@ class CtrlClicCataleg{
 
 	public function extractNivell($nivell){
 		return $nivell;
-
-		//TODO: extreure el nivell i guardar-ho per separat per poder filtrar
 		$match = explode(",", $nivell);
 		array_walk_recursive($match, "trim");
 		return $match;
@@ -251,13 +258,18 @@ class CtrlClicCataleg{
 			echo "Failed: " . $e->getMessage();
 		}
 	}
-	
-	public function guardarInsertMutliple($array_values){
+
+    /** Function to insert clics into the database, and update the rows to allow filtering
+     *
+     * @param $array_values Values to insert into the database
+     *
+     * @return int Number of rows added
+     */
+    public function guardarInsertMutliple($array_values){
 		$clic = new ClicCataleg();
 		$header = $clic->getSQLValues(1);
 		$values = implode($array_values, ",");
 		$sql = "REPLACE INTO ".ClicCataleg::$TAULA." ".$header." VALUES ".$values ." ";
-		//echo $sql;
 		$db = DBhelper::getInstance();
 		
 		try {
@@ -271,22 +283,23 @@ class CtrlClicCataleg{
 		}
 
         try{
-            $db->exec(" UPDATE ".ClicCataleg::$TAULA." SET area_lleng = b'1' WHERE area LIKE '%Lenguas%';
-                        UPDATE ".ClicCataleg::$TAULA." SET area_mat = b'1' WHERE area LIKE '%Matemáticas%';
-                        UPDATE ".ClicCataleg::$TAULA." SET area_soc = b'1' WHERE area LIKE '%Ciencias sociales%';
-                        UPDATE ".ClicCataleg::$TAULA." SET area_exp = b'1' WHERE area LIKE '%Ciencias experimentales%';
-                        UPDATE ".ClicCataleg::$TAULA." SET area_mus = b'1' WHERE area LIKE '%Música%';
-                        UPDATE ".ClicCataleg::$TAULA." SET area_vip = b'1' WHERE area LIKE '%Plástica y visual%';
-                        UPDATE ".ClicCataleg::$TAULA." SET area_ef = b'1' WHERE area LIKE '%***%';
-                        UPDATE ".ClicCataleg::$TAULA." SET area_tec = b'1' WHERE area LIKE '%Tecnología%';
-                        UPDATE ".ClicCataleg::$TAULA." SET area_div = b'1' WHERE area LIKE '%Diversos%';
+            /**
+             * Query to update the database setting the booleans to filter the clics by area and grade
+             */
+            $db->exec(" UPDATE " . ClicCataleg::$TAULA . " SET area_lleng = b'1' WHERE area LIKE '%Lenguas%';
+                        UPDATE " . ClicCataleg::$TAULA . " SET area_mat = b'1' WHERE area LIKE '%Matemáticas%';
+                        UPDATE " . ClicCataleg::$TAULA . " SET area_soc = b'1' WHERE area LIKE '%Ciencias sociales%';
+                        UPDATE " . ClicCataleg::$TAULA . " SET area_exp = b'1' WHERE area LIKE '%Ciencias experimentales%';
+                        UPDATE " . ClicCataleg::$TAULA . " SET area_mus = b'1' WHERE area LIKE '%Música%';
+                        UPDATE " . ClicCataleg::$TAULA . " SET area_vip = b'1' WHERE area LIKE '%Plástica y visual%';
+                        UPDATE " . ClicCataleg::$TAULA . " SET area_ef = b'1' WHERE area LIKE '%Educación física%';
+                        UPDATE " . ClicCataleg::$TAULA . " SET area_tec = b'1' WHERE area LIKE '%Tecnología%';
+                        UPDATE " . ClicCataleg::$TAULA . " SET area_div = b'1' WHERE area LIKE '%Diversos%';
 
-
-
-                        UPDATE ".ClicCataleg::$TAULA." SET nivel_INF = b'1' WHERE nivell LIKE '%Infantil (3-6)%';
-                        UPDATE ".ClicCataleg::$TAULA." SET nivel_PRI = b'1' WHERE nivell LIKE '%Primaria (6-12)%';
-                        UPDATE ".ClicCataleg::$TAULA." SET nivel_SEC = b'1' WHERE nivell LIKE '%Secundaria (12-16)%';
-                        UPDATE ".ClicCataleg::$TAULA." SET nivel_BTX = b'1' WHERE nivell LIKE '%Bachillerato (16-18)%';
+                        UPDATE " . ClicCataleg::$TAULA . " SET nivel_INF = b'1' WHERE nivell LIKE '%Infantil (3-6)%';
+                        UPDATE " . ClicCataleg::$TAULA . " SET nivel_PRI = b'1' WHERE nivell LIKE '%Primaria (6-12)%';
+                        UPDATE " . ClicCataleg::$TAULA . " SET nivel_SEC = b'1' WHERE nivell LIKE '%Secundaria (12-16)%';
+                        UPDATE " . ClicCataleg::$TAULA . " SET nivel_BTX = b'1' WHERE nivell LIKE '%Bachillerato (16-18)%';
                         ");
 
         } catch (Exception $e) {
