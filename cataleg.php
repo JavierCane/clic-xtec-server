@@ -1,4 +1,12 @@
 <?
+
+/**
+ * @author carles.guivernau
+ *
+ * Changes from existing code to allow filtering by area, level and keyword
+ */
+
+
 include_once "class/includes.php";
 
 header('Content-Type: text/plain; charset=utf-8');
@@ -21,11 +29,11 @@ if(HTML::getHTTPHeader("GPSAUTH") != md5("GPS_PASSWORD")){
 }
 
 $ccm = CtrlClicCataleg::getInstance();
-$all_clics = $ccm->getClicsFiltres($lang, $inici, $limit, $nivell, $area, $cerca);
+$all_clics = $ccm->getClicsFiltres( $lang, $inici, $limit, $nivell, $area, $cerca );
 
 $res = array();
-foreach( $all_clics as $clic){
-	array_push($res, $clic->getPublicClass($lang_cataleg));
+foreach( $all_clics as $clic ){
+	array_push( $res, $clic->getPublicClass( $lang_cataleg ) );
 }
 
 $json = json_encode($res);

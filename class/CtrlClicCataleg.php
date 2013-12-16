@@ -34,6 +34,8 @@ class CtrlClicCataleg{
     }
 
     /** Function to get clics by search filters
+     *
+     * @author albert.prats & carles.guivernau
      * @param $lang Clics language
      * @param $inici First row to select
      * @param $limit Limit the number of results
@@ -125,7 +127,7 @@ class CtrlClicCataleg{
 		preg_match('/(id=)(.*)/', $url, $res);
 		return $res[2];
 	}
-	
+
 	public function obtenirClicXTEC($id,$lang){
 		$res = array();
 		$llista_clic_inst = array();
@@ -216,8 +218,11 @@ class CtrlClicCataleg{
 		preg_match('/(.*\/)/', $url, $parts);
 		return $parts[0];
 	}
-	
-	public function obtenirClicsFromXMLInst($clic){
+
+    /**
+     * Changes made by carles.guivernau, to add additional clics into db if they are zip files
+     */
+    public function obtenirClicsFromXMLInst($clic){
 		$html = HTML::do_GET($clic->urlBase . $clic->inst);
 		$dom = new DOMDocument();
 		$dom->loadHTML($html);
@@ -285,6 +290,7 @@ class CtrlClicCataleg{
         try{
             /**
              * Query to update the database setting the booleans to filter the clics by area and grade
+             * @author carles.guivernau
              */
             $db->exec(" UPDATE " . ClicCataleg::$TAULA . " SET area_lleng = b'1' WHERE area LIKE '%Lenguas%';
                         UPDATE " . ClicCataleg::$TAULA . " SET area_mat = b'1' WHERE area LIKE '%Matemáticas%';
